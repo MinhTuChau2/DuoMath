@@ -33,11 +33,17 @@ def draw_on_canvas(event):
 canvas.bind("<B1-Motion>", draw_on_canvas)
 
 # Function to generate a new math question
+
 def generate_math_question():
     global correct_answer
     num1 = random.randint(1, 9)
     num2 = random.randint(1, 9)
     operation = random.choice(["+", "-"])
+    
+    # If the operation is subtraction, make sure the larger number is first
+    if operation == "-":
+        if num1 < num2:
+            num1, num2 = num2, num1  # Swap to make sure num1 >= num2
     
     # Create the math question and the correct answer
     question_text = f"{num1} {operation} {num2} = ?"
@@ -45,6 +51,7 @@ def generate_math_question():
     
     # Update the question label
     math_question_label.config(text=question_text)
+
 
 # Function to process the drawn image and run the model
 def recognize_text():
@@ -80,6 +87,8 @@ def update_score(points):
     score += points
     score_label.config(text=f"Score: {score}")
     
+    if points == 1:
+        clear_canvas()
     # Generate a new math question when the score increases
     generate_math_question()
 
